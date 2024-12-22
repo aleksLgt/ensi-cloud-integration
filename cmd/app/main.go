@@ -40,7 +40,7 @@ func main() {
 func initOpts() app.Options {
 	options := app.Options{}
 
-	// TODO тут разобраться с этой конструкцией
+	// TODO
 	flag.StringVar(
 		&options.Addr,
 		"addr",

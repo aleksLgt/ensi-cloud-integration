@@ -38,7 +38,7 @@ func (c *Closer) Close(ctx context.Context) error {
 		}
 
 		complete <- struct{}{}
-	}() // TODO погуглить про синтактис вызова функций в горутинах (последние круглые скобки - зачем?)
+	}() // TODO
 
 	select {
 	case <-complete:
