@@ -1,10 +1,14 @@
 package categories
 
-import "context"
+import (
+	"context"
+
+	"ensi-cloud-integration/internal/app/http/indexes/categories"
+)
 
 type (
 	ensiCloudService interface {
-		IndexCategories(ctx context.Context) error
+		IndexCategories(ctx context.Context, request *categories.IndexCategoriesRequest) error
 	}
 
 	Handler struct {
@@ -18,6 +22,6 @@ func New(ensiCloudService ensiCloudService) *Handler {
 	}
 }
 
-func (h *Handler) IndexCategories(ctx context.Context) error {
-	return nil
+func (h *Handler) IndexCategories(ctx context.Context, request *categories.IndexCategoriesRequest) error {
+	return h.ensiCloudService.IndexCategories(ctx, request)
 }

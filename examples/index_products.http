@@ -1,0 +1,99 @@
+### index a single product
+POST http://localhost:8082/indexes/products
+Content-Type: application/json
+
+{
+  "actions": [
+    {
+      "action": "create",
+      "id": "p-123-456",
+      "body": {
+        "name": "Chicken",
+        "url": "https://someshop.ru/categories/myaso",
+        "category_ids": [
+          "c-123-456"
+        ],
+        "brand_id": "b-123-456",
+        "brand": "Adidas",
+        "vendor_code": "123456",
+        "barcodes": [
+          "1234567890123"
+        ],
+        "description": "Description text",
+        "picture": "https://someshop.ru/images/1.png",
+        "pictures": [
+          "https://someshop.ru/images/1.png"
+        ],
+        "country": "China",
+        "group_ids": [
+          "g-2"
+        ],
+        "locations": [
+          {
+            "id": "l-25",
+            "price": 10000
+          }
+        ],
+        "properties": [
+          {
+            "name": "Color",
+            "values": [
+              "Blue"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+### expected {} 200 OK; one product should be indexed
+
+### invalid action on a product
+POST http://localhost:8082/indexes/products
+Content-Type: application/json
+
+{
+  "actions": [
+    {
+      "action": "remove",
+      "id": "p-123-456",
+      "body": {
+        "name": "Chicken",
+        "url": "https://someshop.ru/categories/myaso",
+        "category_ids": [
+          "c-123-456"
+        ],
+        "brand_id": "b-123-456",
+        "brand": "Adidas",
+        "vendor_code": "123456",
+        "barcodes": [
+          "1234567890123"
+        ],
+        "description": "Description text",
+        "picture": "https://someshop.ru/images/1.png",
+        "pictures": [
+          "https://someshop.ru/images/1.png"
+        ],
+        "country": "China",
+        "group_ids": [
+          "g-2"
+        ],
+        "locations": [
+          {
+            "id": "l-25",
+            "price": 10000
+          }
+        ],
+        "properties": [
+          {
+            "name": "Color",
+            "values": [
+              "Blue"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
+### expected {} 400 Bad Request

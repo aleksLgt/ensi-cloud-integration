@@ -1,0 +1,38 @@
+### search recommendation products
+POST http://localhost:8082/adviser/recommendation-products:search
+Content-Type: application/json
+
+{
+  "filter": {
+    "product_id": "productOneId"
+  }
+}
+### expected {} 200 OK
+
+### search recommendation products with limit
+POST http://localhost:8082/adviser/recommendation-products:search
+Content-Type: application/json
+
+{
+  "filter": {
+    "product_id": "productOneId"
+  },
+  "pagination": {
+    "limit": 5
+  }
+}
+### expected {} 200 OK; the response contains no more than 5 elements
+
+### search recommendation products; invalid pagination.limit
+POST http://localhost:8082/adviser/recommendation-products:search
+Content-Type: application/json
+
+{
+  "filter": {
+    "product_id": "productOneId"
+  },
+  "pagination": {
+    "limit": 55
+  }
+}
+### expected {} 400 Bad Request

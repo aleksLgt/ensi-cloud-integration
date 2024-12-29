@@ -1,0 +1,33 @@
+### index a single category
+POST http://localhost:8082/indexes/categories
+Content-Type: application/json
+
+{
+  "actions": [
+    {
+      "action": "create",
+      "id": "c-123-456",
+      "body": {
+        "name": "Meat"
+      }
+    }
+  ]
+}
+### expected {} 200 OK; one category should be indexed
+
+### invalid action on a product
+POST http://localhost:8082/indexes/categories
+Content-Type: application/json
+
+{
+  "actions": [
+    {
+      "action": "remove",
+      "id": "c-123-456",
+      "body": {
+        "name": "Meat"
+      }
+    }
+  ]
+}
+### expected {} 400 Bad Request

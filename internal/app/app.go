@@ -2,8 +2,6 @@ package app
 
 import (
 	"context"
-	"ensi-cloud-integration/internal/app/http/indexes"
-	indexProducts "ensi-cloud-integration/internal/service/ensiCloud/indexes/products"
 	"errors"
 	"fmt"
 	"log"
@@ -11,7 +9,19 @@ import (
 	"time"
 
 	"ensi-cloud-integration/internal/app/closer"
+	"ensi-cloud-integration/internal/app/http/adviser/crossSellProducts"
+	"ensi-cloud-integration/internal/app/http/adviser/recommendationProducts"
+	"ensi-cloud-integration/internal/app/http/adviser/recommendationQueryProducts"
+	"ensi-cloud-integration/internal/app/http/catalog"
+	"ensi-cloud-integration/internal/app/http/indexes/categories"
+	"ensi-cloud-integration/internal/app/http/indexes/products"
 	"ensi-cloud-integration/internal/clients/ensiCloud"
+	searchCrossSellProducts "ensi-cloud-integration/internal/service/ensiCloud/adviser/crossSellProducts"
+	searchRecommendationProducts "ensi-cloud-integration/internal/service/ensiCloud/adviser/recommendationProducts"
+	searchRecommendationQueryProducts "ensi-cloud-integration/internal/service/ensiCloud/adviser/recommendationQueryProducts"
+	searchCatalog "ensi-cloud-integration/internal/service/ensiCloud/catalog"
+	indexCategories "ensi-cloud-integration/internal/service/ensiCloud/indexes/categories"
+	indexProducts "ensi-cloud-integration/internal/service/ensiCloud/indexes/products"
 )
 
 type (
@@ -26,7 +36,12 @@ type (
 	}
 
 	ensiCloudClient interface {
-		IndexProducts(ctx context.Context) error
+		IndexProducts(ctx context.Context, request *products.IndexProductsRequest) error
+		IndexCategories(ctx context.Context, request *categories.IndexCategoriesRequest) error
+		SearchCatalog(ctx context.Context, request *catalog.SearchCatalogRequest) ([]byte, error)
+		SearchCrossSellProducts(ctx context.Context, request *crossSellProducts.SearchCrossSellProductsRequest) ([]byte, error)
+		SearchRecommendationProducts(ctx context.Context, request *recommendationProducts.SearchRecommendationProductsRequest) ([]byte, error)
+		SearchRecommendationQueryProducts(ctx context.Context, request *recommendationQueryProducts.SearchRecommendationQueryProductsRequest) ([]byte, error)
 	}
 
 	App struct {
@@ -58,6 +73,7 @@ func NewApp(ctx context.Context, config *Config) (*App, error) {
 		mux:    mux,
 		server: &http.Server{
 			Addr:              config.addr,
+			Handler:           mux,
 			ReadHeaderTimeout: 3 * time.Second, // TODO
 		},
 		ensiCloudClient: newEnsiCloudClient,
@@ -66,13 +82,7 @@ func NewApp(ctx context.Context, config *Config) (*App, error) {
 }
 
 func (a *App) ListenAndServe() error {
-	a.mux.Handle(
-		a.config.path.indexProducts,
-		indexes.NewIndexProductsHandler(
-			indexProducts.New(a.ensiCloudClient),
-			a.config.path.indexProducts,
-		),
-	)
+	a.registerRoutes()
 
 	a.closer.Add(a.server.Shutdown)
 
@@ -103,4 +113,54 @@ func (a *App) ListenAndServe() error {
 	}
 
 	return nil
+}
+
+func (a *App) registerRoutes() {
+	a.mux.Handle(
+		a.config.path.indexProducts,
+		products.NewIndexProductsHandler(
+			indexProducts.New(a.ensiCloudClient),
+			a.config.path.indexProducts,
+		),
+	)
+
+	a.mux.Handle(
+		a.config.path.indexCategories,
+		categories.NewIndexCategoriesHandler(
+			indexCategories.New(a.ensiCloudClient),
+			a.config.path.indexCategories,
+		),
+	)
+
+	a.mux.Handle(
+		a.config.path.searchCatalog,
+		catalog.NewSearchCatalogHandler(
+			searchCatalog.New(a.ensiCloudClient),
+			a.config.path.searchCatalog,
+		),
+	)
+
+	a.mux.Handle(
+		a.config.path.searchCrossSellProducts,
+		crossSellProducts.NewSearchCrossSellProductsHandler(
+			searchCrossSellProducts.New(a.ensiCloudClient),
+			a.config.path.searchCrossSellProducts,
+		),
+	)
+
+	a.mux.Handle(
+		a.config.path.searchRecommendedProducts,
+		recommendationProducts.NewSearchRecommendationProductsHandler(
+			searchRecommendationProducts.New(a.ensiCloudClient),
+			a.config.path.searchRecommendedProducts,
+		),
+	)
+
+	a.mux.Handle(
+		a.config.path.searchRecommendedQueryProducts,
+		recommendationQueryProducts.NewSearchRecommendationQueryProductsHandler(
+			searchRecommendationQueryProducts.New(a.ensiCloudClient),
+			a.config.path.searchRecommendedQueryProducts,
+		),
+	)
 }

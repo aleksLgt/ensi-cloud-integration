@@ -1,10 +1,14 @@
 package products
 
-import "context"
+import (
+	"context"
+
+	"ensi-cloud-integration/internal/app/http/indexes/products"
+)
 
 type (
 	ensiCloudService interface {
-		IndexProducts(ctx context.Context) error
+		IndexProducts(ctx context.Context, request *products.IndexProductsRequest) error
 	}
 
 	Handler struct {
@@ -18,6 +22,6 @@ func New(ensiCloudService ensiCloudService) *Handler {
 	}
 }
 
-func (h *Handler) IndexProducts(ctx context.Context) error {
-	return nil
+func (h *Handler) IndexProducts(ctx context.Context, request *products.IndexProductsRequest) error {
+	return h.ensiCloudService.IndexProducts(ctx, request)
 }

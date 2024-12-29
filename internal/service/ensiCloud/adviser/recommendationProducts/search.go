@@ -1,10 +1,14 @@
 package recommendationProducts
 
-import "context"
+import (
+	"context"
+
+	"ensi-cloud-integration/internal/app/http/adviser/recommendationProducts"
+)
 
 type (
 	ensiCloudService interface {
-		SearchRecommendedProducts(ctx context.Context) error
+		SearchRecommendationProducts(ctx context.Context, request *recommendationProducts.SearchRecommendationProductsRequest) ([]byte, error)
 	}
 
 	Handler struct {
@@ -18,6 +22,6 @@ func New(ensiCloudService ensiCloudService) *Handler {
 	}
 }
 
-func (h *Handler) SearchRecommendedProducts(ctx context.Context) error {
-	return nil
+func (h *Handler) SearchRecommendationProducts(ctx context.Context, request *recommendationProducts.SearchRecommendationProductsRequest) ([]byte, error) {
+	return h.ensiCloudService.SearchRecommendationProducts(ctx, request)
 }
