@@ -12,12 +12,20 @@ import (
 	"ensi-cloud-integration/internal/app/http/adviser/recommendationProducts"
 )
 
+type (
+	SearchRecommendationProductsResponse struct {
+		Data struct {
+			Products []string `json:"products"`
+		} `json:"data"`
+	}
+)
+
 const SearchRecommendationProductsPath = "/api/v1/adviser/recommendation-products:search"
 
 func (c *Client) SearchRecommendationProducts(
 	ctx context.Context,
 	request *recommendationProducts.SearchRecommendationProductsRequest,
-) ([]byte, error) {
+) (*SearchRecommendationProductsResponse, error) {
 	data, err := json.Marshal(request)
 	if err != nil {
 		return nil, fmt.Errorf("failed to encode request %w", err)
@@ -60,7 +68,11 @@ func (c *Client) SearchRecommendationProducts(
 		return nil, fmt.Errorf("HTTP request responded with: %d , message: %s", httpResponse.StatusCode, response)
 	}
 
-	// TODO response
+	response := &SearchRecommendationProductsResponse{}
+	err = json.NewDecoder(httpResponse.Body).Decode(response)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode error response: %w", err)
+	}
 
-	return nil, nil
+	return response, nil
 }

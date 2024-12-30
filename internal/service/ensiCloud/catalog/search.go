@@ -4,11 +4,12 @@ import (
 	"context"
 
 	"ensi-cloud-integration/internal/app/http/catalog"
+	"ensi-cloud-integration/internal/clients/ensiCloud"
 )
 
 type (
 	ensiCloudService interface {
-		SearchCatalog(ctx context.Context, request *catalog.SearchCatalogRequest) ([]byte, error)
+		SearchCatalog(ctx context.Context, request *catalog.SearchCatalogRequest) (*ensiCloud.SearchCatalogResponse, error)
 	}
 
 	Handler struct {
@@ -22,6 +23,6 @@ func New(ensiCloudService ensiCloudService) *Handler {
 	}
 }
 
-func (h *Handler) SearchCatalog(ctx context.Context, request *catalog.SearchCatalogRequest) ([]byte, error) {
+func (h *Handler) SearchCatalog(ctx context.Context, request *catalog.SearchCatalogRequest) (*ensiCloud.SearchCatalogResponse, error) {
 	return h.ensiCloudService.SearchCatalog(ctx, request)
 }

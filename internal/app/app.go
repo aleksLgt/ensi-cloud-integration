@@ -38,10 +38,10 @@ type (
 	ensiCloudClient interface {
 		IndexProducts(ctx context.Context, request *products.IndexProductsRequest) error
 		IndexCategories(ctx context.Context, request *categories.IndexCategoriesRequest) error
-		SearchCatalog(ctx context.Context, request *catalog.SearchCatalogRequest) ([]byte, error)
-		SearchCrossSellProducts(ctx context.Context, request *crossSellProducts.SearchCrossSellProductsRequest) ([]byte, error)
-		SearchRecommendationProducts(ctx context.Context, request *recommendationProducts.SearchRecommendationProductsRequest) ([]byte, error)
-		SearchRecommendationQueryProducts(ctx context.Context, request *recommendationQueryProducts.SearchRecommendationQueryProductsRequest) ([]byte, error)
+		SearchCatalog(ctx context.Context, request *catalog.SearchCatalogRequest) (*ensiCloud.SearchCatalogResponse, error)
+		SearchCrossSellProducts(ctx context.Context, request *crossSellProducts.SearchCrossSellProductsRequest) (*ensiCloud.SearchCrossSellProductsResponse, error)
+		SearchRecommendationProducts(ctx context.Context, request *recommendationProducts.SearchRecommendationProductsRequest) (*ensiCloud.SearchRecommendationProductsResponse, error)
+		SearchRecommendationQueryProducts(ctx context.Context, request *recommendationQueryProducts.SearchRecommendationQueryProductsRequest) (*ensiCloud.SearchRecommendationQueryProductsResponse, error)
 	}
 
 	App struct {

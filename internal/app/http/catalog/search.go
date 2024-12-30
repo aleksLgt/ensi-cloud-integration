@@ -9,11 +9,12 @@ import (
 	"gopkg.in/validator.v2"
 
 	http2 "ensi-cloud-integration/internal/app/http"
+	"ensi-cloud-integration/internal/clients/ensiCloud"
 )
 
 type (
 	searchCatalogCommand interface {
-		SearchCatalog(ctx context.Context, request *SearchCatalogRequest) ([]byte, error)
+		SearchCatalog(ctx context.Context, request *SearchCatalogRequest) (*ensiCloud.SearchCatalogResponse, error)
 	}
 
 	SearchCatalogHandler struct {
@@ -83,7 +84,12 @@ func (h *SearchCatalogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	http2.GetSuccessResponseWithBody(w, response)
+	buf, err := json.Marshal(&response)
+	if err != nil {
+		http2.GetErrorResponse(w, h.name, fmt.Errorf("failed to encode response %w", err), http.StatusInternalServerError)
+	}
+
+	http2.GetSuccessResponseWithBody(w, buf)
 }
 
 func (_ *SearchCatalogHandler) getRequestData(r *http.Request) (*SearchCatalogRequest, error) {

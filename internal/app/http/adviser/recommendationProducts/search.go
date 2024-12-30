@@ -9,11 +9,12 @@ import (
 	"gopkg.in/validator.v2"
 
 	http2 "ensi-cloud-integration/internal/app/http"
+	"ensi-cloud-integration/internal/clients/ensiCloud"
 )
 
 type (
 	searchRecommendationProductsCommand interface {
-		SearchRecommendationProducts(ctx context.Context, request *SearchRecommendationProductsRequest) ([]byte, error)
+		SearchRecommendationProducts(ctx context.Context, request *SearchRecommendationProductsRequest) (*ensiCloud.SearchRecommendationProductsResponse, error)
 	}
 
 	SearchRecommendationProductsHandler struct {
@@ -68,7 +69,12 @@ func (h *SearchRecommendationProductsHandler) ServeHTTP(w http.ResponseWriter, r
 		return
 	}
 
-	http2.GetSuccessResponseWithBody(w, response)
+	buf, err := json.Marshal(&response)
+	if err != nil {
+		http2.GetErrorResponse(w, h.name, fmt.Errorf("failed to encode response %w", err), http.StatusInternalServerError)
+	}
+
+	http2.GetSuccessResponseWithBody(w, buf)
 }
 
 func (_ *SearchRecommendationProductsHandler) getRequestData(r *http.Request) (*SearchRecommendationProductsRequest, error) {
