@@ -9,12 +9,12 @@ import (
 	"gopkg.in/validator.v2"
 
 	http2 "ensi-cloud-integration/internal/app/http"
-	"ensi-cloud-integration/internal/domain/catalogDomain"
+	"ensi-cloud-integration/internal/domain"
 )
 
 type (
 	searchCatalogCommand interface {
-		SearchCatalog(ctx context.Context, request *catalogDomain.SearchCatalogRequest) (*catalogDomain.SearchCatalogResponse, error)
+		SearchCatalog(ctx context.Context, request *domain.SearchCatalogRequest) (*domain.SearchCatalogResponse, error)
 	}
 
 	SearchCatalogHandler struct {
@@ -36,7 +36,7 @@ func (h *SearchCatalogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	ctx := r.Context()
 
 	var (
-		request *catalogDomain.SearchCatalogRequest
+		request *domain.SearchCatalogRequest
 		err     error
 	)
 
@@ -64,8 +64,8 @@ func (h *SearchCatalogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	http2.GetSuccessResponseWithBody(w, buf)
 }
 
-func (_ *SearchCatalogHandler) getRequestData(r *http.Request) (*catalogDomain.SearchCatalogRequest, error) {
-	request := &catalogDomain.SearchCatalogRequest{}
+func (_ *SearchCatalogHandler) getRequestData(r *http.Request) (*domain.SearchCatalogRequest, error) {
+	request := &domain.SearchCatalogRequest{}
 	err := json.NewDecoder(r.Body).Decode(request)
 
 	if err != nil {

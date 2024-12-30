@@ -9,12 +9,15 @@ import (
 	"gopkg.in/validator.v2"
 
 	http2 "ensi-cloud-integration/internal/app/http"
-	"ensi-cloud-integration/internal/domain/crossSellProductsDomain"
+	"ensi-cloud-integration/internal/domain"
 )
 
 type (
 	searchCrossSellProductsCommand interface {
-		SearchCrossSellProducts(ctx context.Context, request *crossSellProductsDomain.SearchCrossSellProductsRequest) (*crossSellProductsDomain.SearchCrossSellProductsResponse, error)
+		SearchCrossSellProducts(
+			ctx context.Context,
+			request *domain.SearchCrossSellProductsRequest,
+		) (*domain.SearchCrossSellProductsResponse, error)
 	}
 
 	SearchCrossSellProductsHandler struct {
@@ -36,7 +39,7 @@ func (h *SearchCrossSellProductsHandler) ServeHTTP(w http.ResponseWriter, r *htt
 	ctx := r.Context()
 
 	var (
-		request *crossSellProductsDomain.SearchCrossSellProductsRequest
+		request *domain.SearchCrossSellProductsRequest
 		err     error
 	)
 
@@ -64,8 +67,8 @@ func (h *SearchCrossSellProductsHandler) ServeHTTP(w http.ResponseWriter, r *htt
 	http2.GetSuccessResponseWithBody(w, buf)
 }
 
-func (_ *SearchCrossSellProductsHandler) getRequestData(r *http.Request) (*crossSellProductsDomain.SearchCrossSellProductsRequest, error) {
-	request := &crossSellProductsDomain.SearchCrossSellProductsRequest{}
+func (_ *SearchCrossSellProductsHandler) getRequestData(r *http.Request) (*domain.SearchCrossSellProductsRequest, error) {
+	request := &domain.SearchCrossSellProductsRequest{}
 	err := json.NewDecoder(r.Body).Decode(request)
 
 	if err != nil {

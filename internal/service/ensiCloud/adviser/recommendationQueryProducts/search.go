@@ -3,12 +3,15 @@ package recommendationQueryProducts
 import (
 	"context"
 
-	"ensi-cloud-integration/internal/domain/recommendationQueryProductsDomain"
+	"ensi-cloud-integration/internal/domain"
 )
 
 type (
 	ensiCloudService interface {
-		SearchRecommendationQueryProducts(ctx context.Context, request *recommendationQueryProductsDomain.SearchRecommendationQueryProductsRequest) (*recommendationQueryProductsDomain.SearchRecommendationQueryProductsResponse, error)
+		SearchRecommendationQueryProducts(
+			ctx context.Context,
+			request *domain.SearchRecommendationQueryProductsRequest,
+		) (*domain.SearchRecommendationQueryProductsResponse, error)
 	}
 
 	Handler struct {
@@ -22,6 +25,9 @@ func New(ensiCloudService ensiCloudService) *Handler {
 	}
 }
 
-func (h *Handler) SearchRecommendationQueryProducts(ctx context.Context, request *recommendationQueryProductsDomain.SearchRecommendationQueryProductsRequest) (*recommendationQueryProductsDomain.SearchRecommendationQueryProductsResponse, error) {
+func (h *Handler) SearchRecommendationQueryProducts(
+	ctx context.Context,
+	request *domain.SearchRecommendationQueryProductsRequest,
+) (*domain.SearchRecommendationQueryProductsResponse, error) {
 	return h.ensiCloudService.SearchRecommendationQueryProducts(ctx, request)
 }

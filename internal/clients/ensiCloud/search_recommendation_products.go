@@ -8,15 +8,15 @@ import (
 	"net/http"
 	"net/url"
 
-	"ensi-cloud-integration/internal/domain/recommendationProductsDomain"
+	"ensi-cloud-integration/internal/domain"
 )
 
 const SearchRecommendationProductsPath = "/api/v1/adviser/recommendation-products:search"
 
 func (c *Client) SearchRecommendationProducts(
 	ctx context.Context,
-	request *recommendationProductsDomain.SearchRecommendationProductsRequest,
-) (*recommendationProductsDomain.SearchRecommendationProductsResponse, error) {
+	request *domain.SearchRecommendationProductsRequest,
+) (*domain.SearchRecommendationProductsResponse, error) {
 	data, err := json.Marshal(request)
 	if err != nil {
 		return nil, fmt.Errorf("failed to encode request %w", err)
@@ -57,7 +57,7 @@ func (c *Client) SearchRecommendationProducts(
 		return nil, fmt.Errorf("HTTP request responded with: %d , message: %s", httpResponse.StatusCode, response)
 	}
 
-	response := &recommendationProductsDomain.SearchRecommendationProductsResponse{}
+	response := &domain.SearchRecommendationProductsResponse{}
 	err = json.NewDecoder(httpResponse.Body).Decode(response)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode error response: %w", err)

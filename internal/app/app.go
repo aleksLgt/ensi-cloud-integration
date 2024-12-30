@@ -15,10 +15,7 @@ import (
 	"ensi-cloud-integration/internal/app/http/indexes/categories"
 	"ensi-cloud-integration/internal/app/http/indexes/products"
 	"ensi-cloud-integration/internal/clients/ensiCloud"
-	"ensi-cloud-integration/internal/domain/catalogDomain"
-	"ensi-cloud-integration/internal/domain/crossSellProductsDomain"
-	"ensi-cloud-integration/internal/domain/recommendationProductsDomain"
-	"ensi-cloud-integration/internal/domain/recommendationQueryProductsDomain"
+	"ensi-cloud-integration/internal/domain"
 	searchCrossSellProducts "ensi-cloud-integration/internal/service/ensiCloud/adviser/crossSellProducts"
 	searchRecommendationProducts "ensi-cloud-integration/internal/service/ensiCloud/adviser/recommendationProducts"
 	searchRecommendationQueryProducts "ensi-cloud-integration/internal/service/ensiCloud/adviser/recommendationQueryProducts"
@@ -42,10 +39,22 @@ type (
 	ensiCloudClient interface {
 		IndexProducts(ctx context.Context, request *products.IndexProductsRequest) error
 		IndexCategories(ctx context.Context, request *categories.IndexCategoriesRequest) error
-		SearchCatalog(ctx context.Context, request *catalogDomain.SearchCatalogRequest) (*catalogDomain.SearchCatalogResponse, error)
-		SearchCrossSellProducts(ctx context.Context, request *crossSellProductsDomain.SearchCrossSellProductsRequest) (*crossSellProductsDomain.SearchCrossSellProductsResponse, error)
-		SearchRecommendationProducts(ctx context.Context, request *recommendationProductsDomain.SearchRecommendationProductsRequest) (*recommendationProductsDomain.SearchRecommendationProductsResponse, error)
-		SearchRecommendationQueryProducts(ctx context.Context, request *recommendationQueryProductsDomain.SearchRecommendationQueryProductsRequest) (*recommendationQueryProductsDomain.SearchRecommendationQueryProductsResponse, error)
+		SearchCatalog(ctx context.Context, request *domain.SearchCatalogRequest) (*domain.SearchCatalogResponse, error)
+
+		SearchCrossSellProducts(
+			ctx context.Context,
+			request *domain.SearchCrossSellProductsRequest,
+		) (*domain.SearchCrossSellProductsResponse, error)
+
+		SearchRecommendationProducts(
+			ctx context.Context,
+			request *domain.SearchRecommendationProductsRequest,
+		) (*domain.SearchRecommendationProductsResponse, error)
+
+		SearchRecommendationQueryProducts(
+			ctx context.Context,
+			request *domain.SearchRecommendationQueryProductsRequest,
+		) (*domain.SearchRecommendationQueryProductsResponse, error)
 	}
 
 	App struct {

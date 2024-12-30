@@ -9,12 +9,15 @@ import (
 	"gopkg.in/validator.v2"
 
 	http2 "ensi-cloud-integration/internal/app/http"
-	"ensi-cloud-integration/internal/domain/recommendationQueryProductsDomain"
+	"ensi-cloud-integration/internal/domain"
 )
 
 type (
 	searchRecommendationQueryProductsCommand interface {
-		SearchRecommendationQueryProducts(ctx context.Context, request *recommendationQueryProductsDomain.SearchRecommendationQueryProductsRequest) (*recommendationQueryProductsDomain.SearchRecommendationQueryProductsResponse, error)
+		SearchRecommendationQueryProducts(
+			ctx context.Context,
+			request *domain.SearchRecommendationQueryProductsRequest,
+		) (*domain.SearchRecommendationQueryProductsResponse, error)
 	}
 
 	SearchRecommendationQueryProductsHandler struct {
@@ -36,7 +39,7 @@ func (h *SearchRecommendationQueryProductsHandler) ServeHTTP(w http.ResponseWrit
 	ctx := r.Context()
 
 	var (
-		request *recommendationQueryProductsDomain.SearchRecommendationQueryProductsRequest
+		request *domain.SearchRecommendationQueryProductsRequest
 		err     error
 	)
 
@@ -64,8 +67,8 @@ func (h *SearchRecommendationQueryProductsHandler) ServeHTTP(w http.ResponseWrit
 	http2.GetSuccessResponseWithBody(w, buf)
 }
 
-func (_ *SearchRecommendationQueryProductsHandler) getRequestData(r *http.Request) (*recommendationQueryProductsDomain.SearchRecommendationQueryProductsRequest, error) {
-	request := &recommendationQueryProductsDomain.SearchRecommendationQueryProductsRequest{}
+func (_ *SearchRecommendationQueryProductsHandler) getRequestData(r *http.Request) (*domain.SearchRecommendationQueryProductsRequest, error) {
+	request := &domain.SearchRecommendationQueryProductsRequest{}
 	err := json.NewDecoder(r.Body).Decode(request)
 
 	if err != nil {

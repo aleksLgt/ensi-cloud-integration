@@ -3,12 +3,15 @@ package crossSellProducts
 import (
 	"context"
 
-	"ensi-cloud-integration/internal/domain/crossSellProductsDomain"
+	"ensi-cloud-integration/internal/domain"
 )
 
 type (
 	ensiCloudService interface {
-		SearchCrossSellProducts(ctx context.Context, request *crossSellProductsDomain.SearchCrossSellProductsRequest) (*crossSellProductsDomain.SearchCrossSellProductsResponse, error)
+		SearchCrossSellProducts(
+			ctx context.Context,
+			request *domain.SearchCrossSellProductsRequest,
+		) (*domain.SearchCrossSellProductsResponse, error)
 	}
 
 	Handler struct {
@@ -22,6 +25,9 @@ func New(ensiCloudService ensiCloudService) *Handler {
 	}
 }
 
-func (h *Handler) SearchCrossSellProducts(ctx context.Context, request *crossSellProductsDomain.SearchCrossSellProductsRequest) (*crossSellProductsDomain.SearchCrossSellProductsResponse, error) {
+func (h *Handler) SearchCrossSellProducts(
+	ctx context.Context,
+	request *domain.SearchCrossSellProductsRequest,
+) (*domain.SearchCrossSellProductsResponse, error) {
 	return h.ensiCloudService.SearchCrossSellProducts(ctx, request)
 }

@@ -3,12 +3,12 @@ package catalog
 import (
 	"context"
 
-	"ensi-cloud-integration/internal/domain/catalogDomain"
+	"ensi-cloud-integration/internal/domain"
 )
 
 type (
 	ensiCloudService interface {
-		SearchCatalog(ctx context.Context, request *catalogDomain.SearchCatalogRequest) (*catalogDomain.SearchCatalogResponse, error)
+		SearchCatalog(ctx context.Context, request *domain.SearchCatalogRequest) (*domain.SearchCatalogResponse, error)
 	}
 
 	Handler struct {
@@ -22,6 +22,9 @@ func New(ensiCloudService ensiCloudService) *Handler {
 	}
 }
 
-func (h *Handler) SearchCatalog(ctx context.Context, request *catalogDomain.SearchCatalogRequest) (*catalogDomain.SearchCatalogResponse, error) {
+func (h *Handler) SearchCatalog(
+	ctx context.Context,
+	request *domain.SearchCatalogRequest,
+) (*domain.SearchCatalogResponse, error) {
 	return h.ensiCloudService.SearchCatalog(ctx, request)
 }

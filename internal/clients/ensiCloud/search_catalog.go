@@ -8,12 +8,15 @@ import (
 	"net/http"
 	"net/url"
 
-	"ensi-cloud-integration/internal/domain/catalogDomain"
+	"ensi-cloud-integration/internal/domain"
 )
 
 const SearchCatalogPath = "/api/v1/catalog/search"
 
-func (c *Client) SearchCatalog(ctx context.Context, request *catalogDomain.SearchCatalogRequest) (*catalogDomain.SearchCatalogResponse, error) {
+func (c *Client) SearchCatalog(
+	ctx context.Context,
+	request *domain.SearchCatalogRequest,
+) (*domain.SearchCatalogResponse, error) {
 	data, err := json.Marshal(request)
 	if err != nil {
 		return nil, fmt.Errorf("failed to encode request %w", err)
@@ -54,7 +57,7 @@ func (c *Client) SearchCatalog(ctx context.Context, request *catalogDomain.Searc
 		return nil, fmt.Errorf("HTTP request responded with: %d , message: %s", httpResponse.StatusCode, response)
 	}
 
-	response := &catalogDomain.SearchCatalogResponse{}
+	response := &domain.SearchCatalogResponse{}
 	err = json.NewDecoder(httpResponse.Body).Decode(response)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode error response: %w", err)

@@ -9,12 +9,15 @@ import (
 	"gopkg.in/validator.v2"
 
 	http2 "ensi-cloud-integration/internal/app/http"
-	"ensi-cloud-integration/internal/domain/recommendationProductsDomain"
+	"ensi-cloud-integration/internal/domain"
 )
 
 type (
 	searchRecommendationProductsCommand interface {
-		SearchRecommendationProducts(ctx context.Context, request *recommendationProductsDomain.SearchRecommendationProductsRequest) (*recommendationProductsDomain.SearchRecommendationProductsResponse, error)
+		SearchRecommendationProducts(
+			ctx context.Context,
+			request *domain.SearchRecommendationProductsRequest,
+		) (*domain.SearchRecommendationProductsResponse, error)
 	}
 
 	SearchRecommendationProductsHandler struct {
@@ -36,7 +39,7 @@ func (h *SearchRecommendationProductsHandler) ServeHTTP(w http.ResponseWriter, r
 	ctx := r.Context()
 
 	var (
-		request *recommendationProductsDomain.SearchRecommendationProductsRequest
+		request *domain.SearchRecommendationProductsRequest
 		err     error
 	)
 
@@ -64,8 +67,8 @@ func (h *SearchRecommendationProductsHandler) ServeHTTP(w http.ResponseWriter, r
 	http2.GetSuccessResponseWithBody(w, buf)
 }
 
-func (_ *SearchRecommendationProductsHandler) getRequestData(r *http.Request) (*recommendationProductsDomain.SearchRecommendationProductsRequest, error) {
-	request := &recommendationProductsDomain.SearchRecommendationProductsRequest{}
+func (_ *SearchRecommendationProductsHandler) getRequestData(r *http.Request) (*domain.SearchRecommendationProductsRequest, error) {
+	request := &domain.SearchRecommendationProductsRequest{}
 	err := json.NewDecoder(r.Body).Decode(request)
 
 	if err != nil {
