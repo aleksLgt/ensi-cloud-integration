@@ -1,8 +1,13 @@
 package app
 
 type (
+	EnsiCloudConfig struct {
+		Addr, PrivateToken, PublicToken string
+	}
+
 	Options struct {
-		Addr, EnsiCloudPrivateToken, EnsiCloudPublicToken, EnsiCloudAddr string
+		Addr      string
+		EnsiCloud EnsiCloudConfig
 	}
 
 	configEnsiCloudService struct {
@@ -29,9 +34,9 @@ func NewConfig(opts *Options) *Config {
 	return &Config{
 		addr: opts.Addr,
 		configEnsiCloudService: configEnsiCloudService{
-			ensiCloudAddr:         opts.EnsiCloudAddr,
-			ensiCloudPrivateToken: opts.EnsiCloudPrivateToken,
-			ensiCloudPublicToken:  opts.EnsiCloudPublicToken,
+			ensiCloudAddr:         opts.EnsiCloud.Addr,
+			ensiCloudPrivateToken: opts.EnsiCloud.PrivateToken,
+			ensiCloudPublicToken:  opts.EnsiCloud.PublicToken,
 		},
 		path: path{
 			indexProducts:                  "POST /indexes/products",

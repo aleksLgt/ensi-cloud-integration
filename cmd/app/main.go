@@ -2,27 +2,21 @@ package main
 
 import (
 	"context"
-	"flag"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"ensi-cloud-integration/internal/app"
-)
+	"github.com/joho/godotenv"
 
-const (
-	defaultAddr           = ":8082"
-	ensiCloudAddr         = "https://cloud-api-master-dev-cloud.ensi.tech"
-	ensiCloudPrivateToken = "someToken"
-	ensiCloudPublicToken  = "someToken"
+	"ensi-cloud-integration/internal/app"
 )
 
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
+	initEnv()
 	opts := initOpts()
 
 	service, err := app.NewApp(ctx, app.NewConfig(&opts))
@@ -37,39 +31,30 @@ func main() {
 	}
 }
 
+func initEnv() {
+	// loads values from .env into the system
+	if err := godotenv.Load(); err != nil {
+		log.Print("No .env file found")
+	}
+}
+
 func initOpts() app.Options {
-	options := app.Options{}
-
-	// TODO
-	flag.StringVar(
-		&options.Addr,
-		"addr",
-		defaultAddr,
-		fmt.Sprintf("server address, default: %q", defaultAddr),
-	)
-
-	flag.StringVar(
-		&options.EnsiCloudAddr,
-		"ensi_cloud_addr",
-		ensiCloudAddr,
-		fmt.Sprintf("ensi cloud address, default: %q", ensiCloudAddr),
-	)
-
-	flag.StringVar(
-		&options.EnsiCloudPrivateToken,
-		"ensi_cloud_private_token",
-		ensiCloudPrivateToken,
-		fmt.Sprintf("ensi cloud private token, default: %q", ensiCloudPrivateToken),
-	)
-
-	flag.StringVar(
-		&options.EnsiCloudPublicToken,
-		"ensi_cloud_public_token",
-		ensiCloudPublicToken,
-		fmt.Sprintf("ensi cloud public token, default: %q", ensiCloudPublicToken),
-	)
-
-	flag.Parse()
+	options := app.Options{
+		Addr: getEnv("DEFAULT_ADDR", ":8082"),
+		EnsiCloud: app.EnsiCloudConfig{
+			Addr:         getEnv("ENSI_CLOUD_ADDR", ""),
+			PrivateToken: getEnv("ENSI_CLOUD_PRIVATE_TOKEN", ""),
+			PublicToken:  getEnv("ENSI_CLOUD_PUBLIC_TOKEN", ""),
+		},
+	}
 
 	return options
+}
+
+func getEnv(key string, defaultVal string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+
+	return defaultVal
 }
