@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 
@@ -39,8 +38,6 @@ func (c *Client) SearchCrossSellProducts(ctx context.Context, request *crossSell
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
-
-	log.Println(httpRequest, httpResponse)
 
 	defer func() {
 		_ = httpResponse.Body.Close()

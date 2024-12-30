@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -26,6 +25,7 @@ import (
 	searchCatalog "ensi-cloud-integration/internal/service/ensiCloud/catalog"
 	indexCategories "ensi-cloud-integration/internal/service/ensiCloud/indexes/categories"
 	indexProducts "ensi-cloud-integration/internal/service/ensiCloud/indexes/products"
+	"ensi-cloud-integration/pkg/logger"
 )
 
 type (
@@ -60,6 +60,19 @@ type (
 
 func NewApp(ctx context.Context, config *Config) (*App, error) {
 	mux := http.NewServeMux()
+
+	_, err := logger.New()
+	if err != nil {
+		panic(err)
+	}
+
+	loggerCustom, err := logger.With("service", "ensi-cloud-integration")
+	if err != nil {
+		// panic, as an error can only occur if the logger is not initialized
+		panic(err)
+	}
+
+	ctx = logger.ToContext(ctx, loggerCustom)
 
 	newEnsiCloudClient, err := ensiCloud.New(
 		config.ensiCloudAddr,
@@ -100,14 +113,14 @@ func (a *App) ListenAndServe() error {
 
 	go func() {
 		if err := a.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Panicf("listen and serve failed %s", err)
+			logger.Panicw(a.ctx, "listen and serve failed", "error", err)
 		}
 	}()
 
-	log.Printf("listening on %s", a.config.addr)
+	logger.Infow(a.ctx, fmt.Sprintf("listening on %s", a.config.addr))
 	<-a.ctx.Done()
 
-	log.Print("shutting down server gracefully")
+	logger.Infow(a.ctx, "shutting down server gracefully")
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

@@ -10,6 +10,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"ensi-cloud-integration/internal/app"
+	"ensi-cloud-integration/pkg/logger"
 )
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 	service, err := app.NewApp(ctx, app.NewConfig(&opts))
 
 	if err != nil {
-		log.Panicf("error when creating a new app: %s", err)
+		logger.Panicw(ctx, "error when creating a new app", "error", err)
 	}
 
 	err = service.ListenAndServe()
@@ -34,7 +35,7 @@ func main() {
 func initEnv() {
 	// loads values from .env into the system
 	if err := godotenv.Load(); err != nil {
-		log.Print("No .env file found")
+		log.Panic("No .env file found")
 	}
 }
 
