@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "filter": {
-    "query": "productOneName"
+    "query": "Chicken"
   }
 }
 ### expected {} 200 OK
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
   "filter": {
-    "query": "productOneName"
+    "query": "Chicken"
   },
   "pagination": {
     "limit": 5
@@ -29,7 +29,7 @@ Content-Type: application/json
 
 {
   "filter": {
-    "query": "productOneName"
+    "query": "Chicken"
   },
   "pagination": {
     "limit": 55

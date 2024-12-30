@@ -1,0 +1,217 @@
+### search catalog with include=["products"]
+POST http://localhost:8082/catalog/search
+Content-Type: application/json
+
+{
+  "include": [
+    "products"
+  ],
+  "filter": {
+    "location_id": "1",
+    "query": "Chicken",
+    "auto_filter": true,
+    "use_query_correction": true
+  },
+  "pagination": {}
+}
+### expected {} 200 OK; the response contains data on products
+
+### search catalog with include=["categories"]
+POST http://localhost:8082/catalog/search
+Content-Type: application/json
+
+{
+  "include": [
+    "categories"
+  ],
+  "filter": {
+    "location_id": "1",
+    "query": "Chicken",
+    "auto_filter": true,
+    "use_query_correction": true
+  },
+  "pagination": {}
+}
+### expected {} 200 OK; the response contains data on categories
+
+### search catalog with include=["correction"]
+POST http://localhost:8082/catalog/search
+Content-Type: application/json
+
+{
+  "include": [
+    "correction"
+  ],
+  "filter": {
+    "location_id": "1",
+    "query": "Chicken",
+    "auto_filter": true,
+    "use_query_correction": true
+  },
+  "pagination": {}
+}
+### expected {} 200 OK; the response contains a corrected search query
+
+### search catalog with sort="relevance"
+POST http://localhost:8082/catalog/search
+Content-Type: application/json
+
+{
+  "include": [
+    "products"
+  ],
+  "sort": "relevance",
+  "filter": {
+    "location_id": "1",
+    "query": "Chicken",
+    "auto_filter": true,
+    "use_query_correction": true
+  },
+  "pagination": {}
+}
+### expected {} 200 OK; the response contains product data sorted by relevance
+
+### search catalog with sort="name"
+POST http://localhost:8082/catalog/search
+Content-Type: application/json
+
+{
+  "include": [
+    "products"
+  ],
+  "sort": "name",
+  "filter": {
+    "location_id": "1",
+    "query": "Chicken",
+    "auto_filter": true,
+    "use_query_correction": true
+  },
+  "pagination": {}
+}
+### expected {} 200 OK; the response contains product data sorted by name
+
+### search catalog with sort="price"
+POST http://localhost:8082/catalog/search
+Content-Type: application/json
+
+{
+  "include": [
+    "products"
+  ],
+  "sort": "price",
+  "filter": {
+    "location_id": "1",
+    "query": "Chicken",
+    "auto_filter": true,
+    "use_query_correction": true
+  },
+  "pagination": {}
+}
+### expected {} 200 OK; the response contains product data sorted by price
+
+### search catalog by location
+POST http://localhost:8082/catalog/search
+Content-Type: application/json
+
+{
+  "include": [
+    "products"
+  ],
+  "filter": {
+    "location_id": "l-25",
+    "query": "Chicken",
+    "auto_filter": true,
+    "use_query_correction": true
+  },
+  "pagination": {}
+}
+### expected {} 200 OK; the response contains products from a specific location
+
+### search catalog; filter by category_ids
+POST http://localhost:8082/catalog/search
+Content-Type: application/json
+
+{
+  "include": [
+    "products"
+  ],
+  "filter": {
+    "location_id": "1",
+    "query": "Chicken",
+    "auto_filter": true,
+    "use_query_correction": true,
+    "category_ids": [
+      "c-123-456"
+    ]
+  },
+  "pagination": {}
+}
+### expected {} 200 OK; the response contains product data sorted by category_ids
+
+### search catalog; filter by brands
+POST http://localhost:8082/catalog/search
+Content-Type: application/json
+
+{
+  "include": [
+    "products"
+  ],
+  "filter": {
+    "location_id": "1",
+    "query": "Chicken",
+    "auto_filter": true,
+    "use_query_correction": true,
+    "brands": [
+      "Adidas"
+    ]
+  },
+  "pagination": {}
+}
+### expected {} 200 OK; the response contains product data sorted by brands
+
+### search catalog; filter by countries
+POST http://localhost:8082/catalog/search
+Content-Type: application/json
+
+{
+  "include": [
+    "products"
+  ],
+  "filter": {
+    "location_id": "1",
+    "query": "Chicken",
+    "auto_filter": true,
+    "use_query_correction": true,
+    "countries": [
+      "China"
+    ]
+  },
+  "pagination": {}
+}
+### expected {} 200 OK; the response contains product data sorted by countries
+
+### search catalog; filter by properties
+POST http://localhost:8082/catalog/search
+Content-Type: application/json
+
+{
+  "include": [
+    "products"
+  ],
+  "filter": {
+    "location_id": "1",
+    "query": "Chicken",
+    "auto_filter": true,
+    "use_query_correction": true,
+    "properties": [
+      {
+        "name": "Color",
+        "values": [
+          "Blue"
+        ]
+      }
+    ]
+  },
+  "pagination": {}
+}
+### expected {} 200 OK; the response contains product data sorted by properties

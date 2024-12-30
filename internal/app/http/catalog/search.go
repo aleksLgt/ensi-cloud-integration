@@ -21,32 +21,32 @@ type (
 		searchCatalogCommand searchCatalogCommand
 	}
 
-	propertyRequest struct {
+	property struct {
 		Name   string   `json:"name" validate:"nonzero,nonnil"`
 		Values []string `json:"values" validate:"nonnil,min=1"`
 	}
 
-	filterRequest struct {
-		LocationId  string            `json:"location_id" validate:"nonzero,nonnil"`
-		Query       string            `json:"query" validate:"nonzero,nonnil"`
-		CategoryIds []string          `json:"category_ids"`
-		Brands      []string          `json:"brands"`
-		Countries   []string          `json:"countries"`
-		Properties  []propertyRequest `json:"properties"`
+	filter struct {
+		LocationId  string     `json:"location_id" validate:"nonzero,nonnil"`
+		Query       string     `json:"query" validate:"nonzero,nonnil"`
+		CategoryIds []string   `json:"category_ids,omitempty"`
+		Brands      []string   `json:"brands,omitempty"`
+		Countries   []string   `json:"countries,omitempty"`
+		Properties  []property `json:"properties,omitempty"`
 	}
 
-	paginationRequest struct {
-		LimitProducts   int `json:"limit_products" validate:"max=1000"`
-		OffsetProducts  int `json:"offset_products"`
-		LimitCategories int `json:"limit_categories" validate:"max=100"`
+	pagination struct {
+		LimitProducts   int `json:"limit_products,omitempty" validate:"max=1000"`
+		OffsetProducts  int `json:"offset_products,omitempty"`
+		LimitCategories int `json:"limit_categories,omitempty" validate:"max=100"`
 	}
 
 	SearchCatalogRequest struct {
-		IsFastResult bool              `json:"is_fast_result"`
-		Includes     []string          `json:"includes"` // TODO custom rule
-		Sort         string            `json:"sort"`     // TODO custom rule
-		Filter       filterRequest     `json:"filter" validate:"nonnil"`
-		Pagination   paginationRequest `json:"pagination" validate:"nonnil"`
+		IsFastResult bool       `json:"is_fast_result,omitempty"`
+		Include      []string   `json:"include"`        // TODO custom rule
+		Sort         string     `json:"sort,omitempty"` // TODO custom rule
+		Filter       filter     `json:"filter" validate:"nonnil"`
+		Pagination   pagination `json:"pagination" validate:"nonnil"`
 	}
 )
 

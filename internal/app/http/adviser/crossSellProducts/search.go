@@ -21,17 +21,17 @@ type (
 		searchCrossSellProductsCommand searchCrossSellProductsCommand
 	}
 
-	filterRequest struct {
+	filter struct {
 		ProductId string `json:"product_id" validate:"nonzero,nonnil"`
 	}
 
-	paginationRequest struct {
-		Limit int `json:"limit" validate:"max=50"`
+	pagination struct {
+		Limit int `json:"limit,omitempty" validate:"max=50"`
 	}
 
 	SearchCrossSellProductsRequest struct {
-		Filter     filterRequest     `json:"filter" validate:"nonnil"`
-		Pagination paginationRequest `json:"pagination"`
+		Filter     filter     `json:"filter" validate:"nonnil"`
+		Pagination pagination `json:"pagination,omitempty"`
 	}
 )
 
