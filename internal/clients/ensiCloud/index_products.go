@@ -31,6 +31,7 @@ func (c *Client) IndexProducts(ctx context.Context, request *products.IndexProdu
 	}
 
 	httpRequest.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.privateToken))
+	httpRequest.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 

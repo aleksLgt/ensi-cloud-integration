@@ -30,7 +30,8 @@ func (c *Client) SearchCrossSellProducts(ctx context.Context, request *crossSell
 		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 
-	httpRequest.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.privateToken))
+	httpRequest.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.publicToken))
+	httpRequest.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 

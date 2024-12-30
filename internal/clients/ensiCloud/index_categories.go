@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 
@@ -31,6 +30,7 @@ func (c *Client) IndexCategories(ctx context.Context, request *categories.IndexC
 	}
 
 	httpRequest.Header.Set("Authorization", fmt.Sprintf("Bearer %s", c.privateToken))
+	httpRequest.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 
@@ -38,8 +38,6 @@ func (c *Client) IndexCategories(ctx context.Context, request *categories.IndexC
 	if err != nil {
 		return fmt.Errorf("failed to execute HTTP request: %w", err)
 	}
-
-	log.Println(httpRequest, httpResponse)
 
 	defer func() {
 		_ = httpResponse.Body.Close()

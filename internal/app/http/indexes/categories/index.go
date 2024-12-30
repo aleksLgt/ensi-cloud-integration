@@ -21,20 +21,20 @@ type (
 		indexCategoriesCommand indexCategoriesCommand
 	}
 
-	bodyRequest struct {
+	body struct {
 		Name      string   `json:"name" validate:"nonzero,nonnil"`
-		URL       string   `json:"url"`
-		ParentIds []string `json:"parent_ids"`
+		URL       string   `json:"url,omitempty"`
+		ParentIds []string `json:"parent_ids,omitempty"`
 	}
 
-	actionRequest struct {
-		Action string      `json:"action"` // TODO custom rule
-		Id     string      `json:"id" validate:"nonzero,nonnil"`
-		Body   bodyRequest `json:"body" validate:"nonnil"`
+	action struct {
+		Action string `json:"action"` // TODO custom rule
+		Id     string `json:"id" validate:"nonzero,nonnil"`
+		Body   body   `json:"body" validate:"nonnil"`
 	}
 
 	IndexCategoriesRequest struct {
-		Actions []actionRequest `json:"actions" validate:"nonnil"`
+		Actions []action `json:"actions" validate:"nonnil"`
 	}
 )
 
