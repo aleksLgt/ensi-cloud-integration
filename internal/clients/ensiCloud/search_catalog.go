@@ -9,36 +9,12 @@ import (
 	"net/http"
 	"net/url"
 
-	"ensi-cloud-integration/internal/app/http/catalog"
-)
-
-type (
-	SearchCatalogResponse struct {
-		Data struct {
-			TotalProducts   int      `json:"total_products"`
-			Products        []string `json:"products"`
-			TotalCategories int      `json:"total_categories"`
-			Categories      []string `json:"categories"`
-			Correction      string   `json:"correction"`
-			ProductHints    []struct {
-				Word string `json:"word"`
-				Hint string `json:"hint"`
-			} `json:"product_hints"`
-			Filters []struct {
-				Name   string `json:"name"`
-				Code   string `json:"code"`
-				Values []struct {
-					Id   string `json:"id"`
-					Name string `json:"name"`
-				} `json:"values"`
-			} `json:"filters"`
-		} `json:"data"`
-	}
+	"ensi-cloud-integration/internal/domain/catalogDomain"
 )
 
 const SearchCatalogPath = "/api/v1/catalog/search"
 
-func (c *Client) SearchCatalog(ctx context.Context, request *catalog.SearchCatalogRequest) (*SearchCatalogResponse, error) {
+func (c *Client) SearchCatalog(ctx context.Context, request *catalogDomain.SearchCatalogRequest) (*catalogDomain.SearchCatalogResponse, error) {
 	data, err := json.Marshal(request)
 	if err != nil {
 		return nil, fmt.Errorf("failed to encode request %w", err)
@@ -81,7 +57,7 @@ func (c *Client) SearchCatalog(ctx context.Context, request *catalog.SearchCatal
 		return nil, fmt.Errorf("HTTP request responded with: %d , message: %s", httpResponse.StatusCode, response)
 	}
 
-	response := &SearchCatalogResponse{}
+	response := &catalogDomain.SearchCatalogResponse{}
 	err = json.NewDecoder(httpResponse.Body).Decode(response)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode error response: %w", err)

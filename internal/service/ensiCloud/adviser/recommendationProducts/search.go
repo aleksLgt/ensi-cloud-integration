@@ -3,13 +3,12 @@ package recommendationProducts
 import (
 	"context"
 
-	"ensi-cloud-integration/internal/app/http/adviser/recommendationProducts"
-	"ensi-cloud-integration/internal/clients/ensiCloud"
+	"ensi-cloud-integration/internal/domain/recommendationProductsDomain"
 )
 
 type (
 	ensiCloudService interface {
-		SearchRecommendationProducts(ctx context.Context, request *recommendationProducts.SearchRecommendationProductsRequest) (*ensiCloud.SearchRecommendationProductsResponse, error)
+		SearchRecommendationProducts(ctx context.Context, request *recommendationProductsDomain.SearchRecommendationProductsRequest) (*recommendationProductsDomain.SearchRecommendationProductsResponse, error)
 	}
 
 	Handler struct {
@@ -23,6 +22,6 @@ func New(ensiCloudService ensiCloudService) *Handler {
 	}
 }
 
-func (h *Handler) SearchRecommendationProducts(ctx context.Context, request *recommendationProducts.SearchRecommendationProductsRequest) (*ensiCloud.SearchRecommendationProductsResponse, error) {
+func (h *Handler) SearchRecommendationProducts(ctx context.Context, request *recommendationProductsDomain.SearchRecommendationProductsRequest) (*recommendationProductsDomain.SearchRecommendationProductsResponse, error) {
 	return h.ensiCloudService.SearchRecommendationProducts(ctx, request)
 }

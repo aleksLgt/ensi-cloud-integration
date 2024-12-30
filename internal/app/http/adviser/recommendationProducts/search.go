@@ -9,30 +9,17 @@ import (
 	"gopkg.in/validator.v2"
 
 	http2 "ensi-cloud-integration/internal/app/http"
-	"ensi-cloud-integration/internal/clients/ensiCloud"
+	"ensi-cloud-integration/internal/domain/recommendationProductsDomain"
 )
 
 type (
 	searchRecommendationProductsCommand interface {
-		SearchRecommendationProducts(ctx context.Context, request *SearchRecommendationProductsRequest) (*ensiCloud.SearchRecommendationProductsResponse, error)
+		SearchRecommendationProducts(ctx context.Context, request *recommendationProductsDomain.SearchRecommendationProductsRequest) (*recommendationProductsDomain.SearchRecommendationProductsResponse, error)
 	}
 
 	SearchRecommendationProductsHandler struct {
 		name                                string
 		searchRecommendationProductsCommand searchRecommendationProductsCommand
-	}
-
-	filter struct {
-		ProductId string `json:"product_id" validate:"nonzero,nonnil"`
-	}
-
-	pagination struct {
-		Limit int `json:"limit,omitempty" validate:"max=50"`
-	}
-
-	SearchRecommendationProductsRequest struct {
-		Filter     filter     `json:"filter" validate:"nonnil"`
-		Pagination pagination `json:"pagination,omitempty"`
 	}
 )
 
@@ -49,7 +36,7 @@ func (h *SearchRecommendationProductsHandler) ServeHTTP(w http.ResponseWriter, r
 	ctx := r.Context()
 
 	var (
-		request *SearchRecommendationProductsRequest
+		request *recommendationProductsDomain.SearchRecommendationProductsRequest
 		err     error
 	)
 
@@ -63,13 +50,13 @@ func (h *SearchRecommendationProductsHandler) ServeHTTP(w http.ResponseWriter, r
 		return
 	}
 
-	response, err := h.searchRecommendationProductsCommand.SearchRecommendationProducts(ctx, request)
+	searchResponse, err := h.searchRecommendationProductsCommand.SearchRecommendationProducts(ctx, request)
 	if err != nil {
 		http2.GetErrorResponse(w, h.name, err, http.StatusBadRequest)
 		return
 	}
 
-	buf, err := json.Marshal(&response)
+	buf, err := json.Marshal(&searchResponse)
 	if err != nil {
 		http2.GetErrorResponse(w, h.name, fmt.Errorf("failed to encode response %w", err), http.StatusInternalServerError)
 	}
@@ -77,8 +64,8 @@ func (h *SearchRecommendationProductsHandler) ServeHTTP(w http.ResponseWriter, r
 	http2.GetSuccessResponseWithBody(w, buf)
 }
 
-func (_ *SearchRecommendationProductsHandler) getRequestData(r *http.Request) (*SearchRecommendationProductsRequest, error) {
-	request := &SearchRecommendationProductsRequest{}
+func (_ *SearchRecommendationProductsHandler) getRequestData(r *http.Request) (*recommendationProductsDomain.SearchRecommendationProductsRequest, error) {
+	request := &recommendationProductsDomain.SearchRecommendationProductsRequest{}
 	err := json.NewDecoder(r.Body).Decode(request)
 
 	if err != nil {

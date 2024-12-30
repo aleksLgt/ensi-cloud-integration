@@ -9,20 +9,12 @@ import (
 	"net/http"
 	"net/url"
 
-	"ensi-cloud-integration/internal/app/http/adviser/crossSellProducts"
-)
-
-type (
-	SearchCrossSellProductsResponse struct {
-		Data struct {
-			Products []string `json:"products"`
-		} `json:"data"`
-	}
+	"ensi-cloud-integration/internal/domain/crossSellProductsDomain"
 )
 
 const SearchCrossSellProductsPath = "/api/v1/adviser/cross-sell-products:search"
 
-func (c *Client) SearchCrossSellProducts(ctx context.Context, request *crossSellProducts.SearchCrossSellProductsRequest) (*SearchCrossSellProductsResponse, error) {
+func (c *Client) SearchCrossSellProducts(ctx context.Context, request *crossSellProductsDomain.SearchCrossSellProductsRequest) (*crossSellProductsDomain.SearchCrossSellProductsResponse, error) {
 	data, err := json.Marshal(request)
 	if err != nil {
 		return nil, fmt.Errorf("failed to encode request %w", err)
@@ -65,7 +57,7 @@ func (c *Client) SearchCrossSellProducts(ctx context.Context, request *crossSell
 		return nil, fmt.Errorf("HTTP request responded with: %d , message: %s", httpResponse.StatusCode, response)
 	}
 
-	response := &SearchCrossSellProductsResponse{}
+	response := &crossSellProductsDomain.SearchCrossSellProductsResponse{}
 	err = json.NewDecoder(httpResponse.Body).Decode(response)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode error response: %w", err)

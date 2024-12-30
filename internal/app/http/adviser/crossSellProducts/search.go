@@ -9,30 +9,17 @@ import (
 	"gopkg.in/validator.v2"
 
 	http2 "ensi-cloud-integration/internal/app/http"
-	"ensi-cloud-integration/internal/clients/ensiCloud"
+	"ensi-cloud-integration/internal/domain/crossSellProductsDomain"
 )
 
 type (
 	searchCrossSellProductsCommand interface {
-		SearchCrossSellProducts(ctx context.Context, request *SearchCrossSellProductsRequest) (*ensiCloud.SearchCrossSellProductsResponse, error)
+		SearchCrossSellProducts(ctx context.Context, request *crossSellProductsDomain.SearchCrossSellProductsRequest) (*crossSellProductsDomain.SearchCrossSellProductsResponse, error)
 	}
 
 	SearchCrossSellProductsHandler struct {
 		name                           string
 		searchCrossSellProductsCommand searchCrossSellProductsCommand
-	}
-
-	filter struct {
-		ProductId string `json:"product_id" validate:"nonzero,nonnil"`
-	}
-
-	pagination struct {
-		Limit int `json:"limit,omitempty" validate:"max=50"`
-	}
-
-	SearchCrossSellProductsRequest struct {
-		Filter     filter     `json:"filter" validate:"nonnil"`
-		Pagination pagination `json:"pagination,omitempty"`
 	}
 )
 
@@ -49,7 +36,7 @@ func (h *SearchCrossSellProductsHandler) ServeHTTP(w http.ResponseWriter, r *htt
 	ctx := r.Context()
 
 	var (
-		request *SearchCrossSellProductsRequest
+		request *crossSellProductsDomain.SearchCrossSellProductsRequest
 		err     error
 	)
 
@@ -63,13 +50,13 @@ func (h *SearchCrossSellProductsHandler) ServeHTTP(w http.ResponseWriter, r *htt
 		return
 	}
 
-	response, err := h.searchCrossSellProductsCommand.SearchCrossSellProducts(ctx, request)
+	searchResponse, err := h.searchCrossSellProductsCommand.SearchCrossSellProducts(ctx, request)
 	if err != nil {
 		http2.GetErrorResponse(w, h.name, err, http.StatusBadRequest)
 		return
 	}
 
-	buf, err := json.Marshal(&response)
+	buf, err := json.Marshal(&searchResponse)
 	if err != nil {
 		http2.GetErrorResponse(w, h.name, fmt.Errorf("failed to encode response %w", err), http.StatusInternalServerError)
 	}
@@ -77,8 +64,8 @@ func (h *SearchCrossSellProductsHandler) ServeHTTP(w http.ResponseWriter, r *htt
 	http2.GetSuccessResponseWithBody(w, buf)
 }
 
-func (_ *SearchCrossSellProductsHandler) getRequestData(r *http.Request) (*SearchCrossSellProductsRequest, error) {
-	request := &SearchCrossSellProductsRequest{}
+func (_ *SearchCrossSellProductsHandler) getRequestData(r *http.Request) (*crossSellProductsDomain.SearchCrossSellProductsRequest, error) {
+	request := &crossSellProductsDomain.SearchCrossSellProductsRequest{}
 	err := json.NewDecoder(r.Body).Decode(request)
 
 	if err != nil {

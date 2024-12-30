@@ -9,30 +9,17 @@ import (
 	"gopkg.in/validator.v2"
 
 	http2 "ensi-cloud-integration/internal/app/http"
-	"ensi-cloud-integration/internal/clients/ensiCloud"
+	"ensi-cloud-integration/internal/domain/recommendationQueryProductsDomain"
 )
 
 type (
 	searchRecommendationQueryProductsCommand interface {
-		SearchRecommendationQueryProducts(ctx context.Context, request *SearchRecommendationQueryProductsRequest) (*ensiCloud.SearchRecommendationQueryProductsResponse, error)
+		SearchRecommendationQueryProducts(ctx context.Context, request *recommendationQueryProductsDomain.SearchRecommendationQueryProductsRequest) (*recommendationQueryProductsDomain.SearchRecommendationQueryProductsResponse, error)
 	}
 
 	SearchRecommendationQueryProductsHandler struct {
 		name                                     string
 		searchRecommendationQueryProductsCommand searchRecommendationQueryProductsCommand
-	}
-
-	filter struct {
-		Query string `json:"query" validate:"nonzero,nonnil"`
-	}
-
-	pagination struct {
-		Limit int `json:"limit,omitempty" validate:"max=50"`
-	}
-
-	SearchRecommendationQueryProductsRequest struct {
-		Filter     filter     `json:"filter" validate:"nonnil"`
-		Pagination pagination `json:"pagination,omitempty"`
 	}
 )
 
@@ -49,7 +36,7 @@ func (h *SearchRecommendationQueryProductsHandler) ServeHTTP(w http.ResponseWrit
 	ctx := r.Context()
 
 	var (
-		request *SearchRecommendationQueryProductsRequest
+		request *recommendationQueryProductsDomain.SearchRecommendationQueryProductsRequest
 		err     error
 	)
 
@@ -63,13 +50,13 @@ func (h *SearchRecommendationQueryProductsHandler) ServeHTTP(w http.ResponseWrit
 		return
 	}
 
-	response, err := h.searchRecommendationQueryProductsCommand.SearchRecommendationQueryProducts(ctx, request)
+	searchResponse, err := h.searchRecommendationQueryProductsCommand.SearchRecommendationQueryProducts(ctx, request)
 	if err != nil {
 		http2.GetErrorResponse(w, h.name, err, http.StatusBadRequest)
 		return
 	}
 
-	buf, err := json.Marshal(&response)
+	buf, err := json.Marshal(&searchResponse)
 	if err != nil {
 		http2.GetErrorResponse(w, h.name, fmt.Errorf("failed to encode response %w", err), http.StatusInternalServerError)
 	}
@@ -77,8 +64,8 @@ func (h *SearchRecommendationQueryProductsHandler) ServeHTTP(w http.ResponseWrit
 	http2.GetSuccessResponseWithBody(w, buf)
 }
 
-func (_ *SearchRecommendationQueryProductsHandler) getRequestData(r *http.Request) (*SearchRecommendationQueryProductsRequest, error) {
-	request := &SearchRecommendationQueryProductsRequest{}
+func (_ *SearchRecommendationQueryProductsHandler) getRequestData(r *http.Request) (*recommendationQueryProductsDomain.SearchRecommendationQueryProductsRequest, error) {
+	request := &recommendationQueryProductsDomain.SearchRecommendationQueryProductsRequest{}
 	err := json.NewDecoder(r.Body).Decode(request)
 
 	if err != nil {
