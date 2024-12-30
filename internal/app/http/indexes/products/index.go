@@ -21,39 +21,39 @@ type (
 		indexProductsCommand indexProductsCommand
 	}
 
-	propertyRequest struct {
+	property struct {
 		Name   string   `json:"name" validate:"nonzero,nonnil"`
 		Values []string `json:"values" validate:"nonnil,min=1"`
 	}
 
-	locationRequest struct {
+	location struct {
 		Id    string `json:"id" validate:"nonzero,nonnil"`
-		Price int    `json:"price" validate:"nonzero,nonnil"`
+		Price int    `json:"price,omitempty" validate:"nonzero,nonnil"`
 	}
 
-	bodyRequest struct {
-		Name        string            `json:"name" validate:"nonzero,nonnil"`
-		URL         string            `json:"url"`
-		CategoryIds []string          `json:"category_ids" validate:"nonnil,min=1"`
-		Brand       string            `json:"brand"`
-		VendorCode  string            `json:"vendor_code" validate:"nonzero,nonnil"`
-		Barcodes    []string          `json:"barcodes"`
-		Description string            `json:"description"`
-		Picture     string            `json:"picture"`
-		Country     string            `json:"country"`
-		GroupIds    []string          `json:"group_ids"`
-		Locations   []locationRequest `json:"locations" validate:"nonnil"`
-		Properties  []propertyRequest `json:"properties" validate:"nonnil"`
+	body struct {
+		Name        string     `json:"name" validate:"nonzero,nonnil"`
+		URL         string     `json:"url,omitempty"`
+		CategoryIds []string   `json:"category_ids" validate:"nonnil,min=1"`
+		Brand       string     `json:"brand,omitempty"`
+		VendorCode  string     `json:"vendor_code" validate:"nonzero,nonnil"`
+		Barcodes    []string   `json:"barcodes,omitempty"`
+		Description string     `json:"description,omitempty"`
+		Picture     string     `json:"picture,omitempty"`
+		Country     string     `json:"country,omitempty"`
+		GroupIds    []string   `json:"group_ids,omitempty"`
+		Locations   []location `json:"locations" validate:"nonnil"`
+		Properties  []property `json:"properties,omitempty" validate:"nonnil"`
 	}
 
-	actionRequest struct {
-		Action string      `json:"action"` // TODO custom rule
-		Id     string      `json:"id" validate:"nonzero,nonnil"`
-		Body   bodyRequest `json:"body" validate:"nonnil"`
+	action struct {
+		Action string `json:"action"` // TODO custom rule
+		Id     string `json:"id" validate:"nonzero,nonnil"`
+		Body   body   `json:"body" validate:"nonnil"`
 	}
 
 	IndexProductsRequest struct {
-		Actions []actionRequest `json:"actions" validate:"nonnil"`
+		Actions []action `json:"actions" validate:"nonnil"`
 	}
 )
 

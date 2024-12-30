@@ -13,7 +13,6 @@ Content-Type: application/json
         "category_ids": [
           "c-123-456"
         ],
-        "brand_id": "b-123-456",
         "brand": "Adidas",
         "vendor_code": "123456",
         "barcodes": [
@@ -21,9 +20,6 @@ Content-Type: application/json
         ],
         "description": "Description text",
         "picture": "https://someshop.ru/images/1.png",
-        "pictures": [
-          "https://someshop.ru/images/1.png"
-        ],
         "country": "China",
         "group_ids": [
           "g-2"
@@ -63,7 +59,6 @@ Content-Type: application/json
         "category_ids": [
           "c-123-456"
         ],
-        "brand_id": "b-123-456",
         "brand": "Adidas",
         "vendor_code": "123456",
         "barcodes": [
@@ -71,9 +66,6 @@ Content-Type: application/json
         ],
         "description": "Description text",
         "picture": "https://someshop.ru/images/1.png",
-        "pictures": [
-          "https://someshop.ru/images/1.png"
-        ],
         "country": "China",
         "group_ids": [
           "g-2"
