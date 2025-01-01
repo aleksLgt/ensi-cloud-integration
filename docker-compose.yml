@@ -1,0 +1,19 @@
+version: "3.8"
+
+networks:
+  internal:
+    driver: bridge
+
+services:
+  cart:
+    container_name: ensi-cloud-integration
+    image: ensi-cloud-integration
+    build:
+      context: .
+      dockerfile: build/Dockerfile
+    ports:
+      - "8082:8082" # HTTP
+    networks:
+      - internal
+
+
