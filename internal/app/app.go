@@ -100,7 +100,7 @@ func NewApp(ctx context.Context, config *Config) (*App, error) {
 		server: &http.Server{
 			Addr:              config.addr,
 			Handler:           mux,
-			ReadHeaderTimeout: 3 * time.Second, // TODO
+			ReadHeaderTimeout: 3 * time.Second,
 		},
 		ensiCloudClient: newEnsiCloudClient,
 		closer:          &closer.Closer{},

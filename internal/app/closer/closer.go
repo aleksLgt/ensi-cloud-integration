@@ -27,7 +27,7 @@ func (c *Closer) Close(ctx context.Context) error {
 
 	var (
 		msgs     = make([]string, 0, len(c.funcs))
-		complete = make(chan struct{}, 1) // TODO
+		complete = make(chan struct{}, 1)
 	)
 
 	go func() {
@@ -38,7 +38,7 @@ func (c *Closer) Close(ctx context.Context) error {
 		}
 
 		complete <- struct{}{}
-	}() // TODO
+	}()
 
 	select {
 	case <-complete:
