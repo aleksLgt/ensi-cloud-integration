@@ -37,8 +37,8 @@ type (
 
 	SearchCatalogRequest struct {
 		IsFastResult bool                 `json:"is_fast_result,omitempty"`
-		Include      []string             `json:"include"`        // TODO custom rule
-		Sort         string               `json:"sort,omitempty"` // TODO custom rule
+		Include      []string             `json:"include"`
+		Sort         string               `json:"sort,omitempty" validate:"sortTypeRule"`
 		Filter       catalogFilterRequest `json:"filter" validate:"nonnil"`
 		Pagination   catalogPagination    `json:"pagination" validate:"nonnil"`
 	}

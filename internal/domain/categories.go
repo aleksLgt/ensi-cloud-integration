@@ -8,7 +8,7 @@ type (
 	}
 
 	indexCategoriesAction struct {
-		Action string              `json:"action"` // TODO custom rule
+		Action string              `json:"action" validate:"actionTypeRule"`
 		Id     string              `json:"id" validate:"nonzero,nonnil"`
 		Body   indexCategoriesBody `json:"body" validate:"nonnil"`
 	}

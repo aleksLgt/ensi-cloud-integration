@@ -9,6 +9,7 @@ import (
 	"gopkg.in/validator.v2"
 
 	http2 "ensi-cloud-integration/internal/app/http"
+	"ensi-cloud-integration/internal/app/http/rules"
 	"ensi-cloud-integration/internal/domain"
 )
 
@@ -41,6 +42,11 @@ func (h *SearchCatalogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	)
 
 	if request, err = h.getRequestData(r); err != nil {
+		http2.GetErrorResponse(w, h.name, err, http.StatusBadRequest)
+		return
+	}
+
+	if err = validator.SetValidationFunc("sortTypeRule", rules.SortTypeRule); err != nil {
 		http2.GetErrorResponse(w, h.name, err, http.StatusBadRequest)
 		return
 	}

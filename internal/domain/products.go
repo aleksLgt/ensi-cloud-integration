@@ -22,7 +22,7 @@ type (
 	}
 
 	indexProductsAction struct {
-		Action string            `json:"action"` // TODO custom rule
+		Action string            `json:"action" validate:"actionTypeRule"`
 		Id     string            `json:"id" validate:"nonzero,nonnil"`
 		Body   indexProductsBody `json:"body" validate:"nonnil"`
 	}
