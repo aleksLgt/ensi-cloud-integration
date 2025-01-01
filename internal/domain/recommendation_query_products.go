@@ -14,5 +14,7 @@ type (
 		Data struct {
 			Products []string `json:"products"`
 		} `json:"data"`
+		Errors []errorResponse `json:"errors,omitempty"`
+		Meta   metaResponse    `json:"meta"`
 	}
 )

@@ -23,8 +23,8 @@ func GetNoContentResponse(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-func GetSuccessResponseWithBody(w http.ResponseWriter, body []byte) {
-	w.WriteHeader(http.StatusOK)
+func GetResponseWithBody(w http.ResponseWriter, body []byte, status int) {
+	w.WriteHeader(status)
 
 	_, _ = w.Write(body)
 }

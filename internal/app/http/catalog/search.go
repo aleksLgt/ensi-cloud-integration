@@ -61,7 +61,12 @@ func (h *SearchCatalogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		http2.GetErrorResponse(w, h.name, fmt.Errorf("failed to encode response %w", err), http.StatusInternalServerError)
 	}
 
-	http2.GetSuccessResponseWithBody(w, buf)
+	if len(searchResponse.Errors) > 0 {
+		http2.GetResponseWithBody(w, buf, http.StatusBadRequest)
+		return
+	}
+
+	http2.GetResponseWithBody(w, buf, http.StatusOK)
 }
 
 func (_ *SearchCatalogHandler) getRequestData(r *http.Request) (*domain.SearchCatalogRequest, error) {

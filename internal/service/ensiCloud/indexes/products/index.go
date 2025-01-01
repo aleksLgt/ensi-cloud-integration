@@ -3,12 +3,12 @@ package products
 import (
 	"context"
 
-	"ensi-cloud-integration/internal/app/http/indexes/products"
+	"ensi-cloud-integration/internal/domain"
 )
 
 type (
 	ensiCloudService interface {
-		IndexProducts(ctx context.Context, request *products.IndexProductsRequest) error
+		IndexProducts(ctx context.Context, request *domain.IndexProductsRequest) (*domain.IndexProductsResponse, error)
 	}
 
 	Handler struct {
@@ -22,6 +22,6 @@ func New(ensiCloudService ensiCloudService) *Handler {
 	}
 }
 
-func (h *Handler) IndexProducts(ctx context.Context, request *products.IndexProductsRequest) error {
+func (h *Handler) IndexProducts(ctx context.Context, request *domain.IndexProductsRequest) (*domain.IndexProductsResponse, error) {
 	return h.ensiCloudService.IndexProducts(ctx, request)
 }

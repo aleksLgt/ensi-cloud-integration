@@ -46,17 +46,6 @@ func (c *Client) SearchCatalog(
 		_ = httpResponse.Body.Close()
 	}()
 
-	if httpResponse.StatusCode != http.StatusOK {
-		response := &ErrorResponse{}
-		err = json.NewDecoder(httpResponse.Body).Decode(response)
-
-		if err != nil {
-			return nil, fmt.Errorf("failed to decode error response: %w", err)
-		}
-
-		return nil, fmt.Errorf("HTTP request responded with: %d , message: %s", httpResponse.StatusCode, response)
-	}
-
 	response := &domain.SearchCatalogResponse{}
 	err = json.NewDecoder(httpResponse.Body).Decode(response)
 	if err != nil {

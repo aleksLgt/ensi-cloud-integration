@@ -8,22 +8,6 @@ type (
 	Client struct {
 		privateToken, publicToken, basePath string
 	}
-
-	dataResponse struct{}
-
-	metaResponse struct{}
-
-	errorErrorResponse struct {
-		Code    string       `json:"code"`
-		Message string       `json:"message"`
-		Meta    metaResponse `json:"meta"`
-	}
-
-	ErrorResponse struct {
-		Data   dataResponse         `json:"data,omitempty"`
-		Errors []errorErrorResponse `json:"errors,omitempty"`
-		Meta   metaResponse         `json:"meta,omitempty"`
-	}
 )
 
 func New(basePath, privateToken, publicToken string) (*Client, error) {

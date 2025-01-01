@@ -64,7 +64,12 @@ func (h *SearchRecommendationQueryProductsHandler) ServeHTTP(w http.ResponseWrit
 		http2.GetErrorResponse(w, h.name, fmt.Errorf("failed to encode response %w", err), http.StatusInternalServerError)
 	}
 
-	http2.GetSuccessResponseWithBody(w, buf)
+	if len(searchResponse.Errors) > 0 {
+		http2.GetResponseWithBody(w, buf, http.StatusBadRequest)
+		return
+	}
+
+	http2.GetResponseWithBody(w, buf, http.StatusOK)
 }
 
 func (_ *SearchRecommendationQueryProductsHandler) getRequestData(r *http.Request) (*domain.SearchRecommendationQueryProductsRequest, error) {

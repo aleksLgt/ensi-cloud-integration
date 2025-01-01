@@ -9,51 +9,17 @@ import (
 	"gopkg.in/validator.v2"
 
 	http2 "ensi-cloud-integration/internal/app/http"
+	"ensi-cloud-integration/internal/domain"
 )
 
 type (
 	indexProductsCommand interface {
-		IndexProducts(ctx context.Context, request *IndexProductsRequest) error
+		IndexProducts(ctx context.Context, request *domain.IndexProductsRequest) (*domain.IndexProductsResponse, error)
 	}
 
 	IndexProductsHandler struct {
 		name                 string
 		indexProductsCommand indexProductsCommand
-	}
-
-	property struct {
-		Name   string   `json:"name" validate:"nonzero,nonnil"`
-		Values []string `json:"values" validate:"nonnil,min=1"`
-	}
-
-	location struct {
-		Id    string `json:"id" validate:"nonzero,nonnil"`
-		Price int    `json:"price,omitempty" validate:"nonzero,nonnil"`
-	}
-
-	body struct {
-		Name        string     `json:"name" validate:"nonzero,nonnil"`
-		URL         string     `json:"url,omitempty"`
-		CategoryIds []string   `json:"category_ids" validate:"nonnil,min=1"`
-		Brand       string     `json:"brand,omitempty"`
-		VendorCode  string     `json:"vendor_code" validate:"nonzero,nonnil"`
-		Barcodes    []string   `json:"barcodes,omitempty"`
-		Description string     `json:"description,omitempty"`
-		Picture     string     `json:"picture,omitempty"`
-		Country     string     `json:"country,omitempty"`
-		GroupIds    []string   `json:"group_ids,omitempty"`
-		Locations   []location `json:"locations" validate:"nonnil"`
-		Properties  []property `json:"properties,omitempty" validate:"nonnil"`
-	}
-
-	action struct {
-		Action string `json:"action"` // TODO custom rule
-		Id     string `json:"id" validate:"nonzero,nonnil"`
-		Body   body   `json:"body" validate:"nonnil"`
-	}
-
-	IndexProductsRequest struct {
-		Actions []action `json:"actions" validate:"nonnil"`
 	}
 )
 
@@ -70,7 +36,7 @@ func (h *IndexProductsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 	ctx := r.Context()
 
 	var (
-		request *IndexProductsRequest
+		request *domain.IndexProductsRequest
 		err     error
 	)
 
@@ -84,17 +50,27 @@ func (h *IndexProductsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err = h.indexProductsCommand.IndexProducts(ctx, request)
+	response, err := h.indexProductsCommand.IndexProducts(ctx, request)
 	if err != nil {
 		http2.GetErrorResponse(w, h.name, err, http.StatusBadRequest)
 		return
 	}
 
-	http2.GetSuccessResponse(w)
+	buf, err := json.Marshal(&response)
+	if err != nil {
+		http2.GetErrorResponse(w, h.name, fmt.Errorf("failed to encode response %w", err), http.StatusInternalServerError)
+	}
+
+	if len(response.Errors) > 0 {
+		http2.GetResponseWithBody(w, buf, http.StatusBadRequest)
+		return
+	}
+
+	http2.GetResponseWithBody(w, buf, http.StatusOK)
 }
 
-func (_ *IndexProductsHandler) getRequestData(r *http.Request) (*IndexProductsRequest, error) {
-	request := &IndexProductsRequest{}
+func (_ *IndexProductsHandler) getRequestData(r *http.Request) (*domain.IndexProductsRequest, error) {
+	request := &domain.IndexProductsRequest{}
 	err := json.NewDecoder(r.Body).Decode(request)
 
 	if err != nil {

@@ -53,5 +53,7 @@ type (
 			ProductHints    []productHint           `json:"product_hints"`
 			Filters         []catalogFilterResponse `json:"filters"`
 		} `json:"data"`
+		Errors []errorResponse `json:"errors,omitempty"`
+		Meta   metaResponse    `json:"meta"`
 	}
 )

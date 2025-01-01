@@ -37,8 +37,8 @@ type (
 	}
 
 	ensiCloudClient interface {
-		IndexProducts(ctx context.Context, request *products.IndexProductsRequest) error
-		IndexCategories(ctx context.Context, request *categories.IndexCategoriesRequest) error
+		IndexProducts(ctx context.Context, request *domain.IndexProductsRequest) (*domain.IndexProductsResponse, error)
+		IndexCategories(ctx context.Context, request *domain.IndexCategoriesRequest) (*domain.IndexCategoriesResponse, error)
 		SearchCatalog(ctx context.Context, request *domain.SearchCatalogRequest) (*domain.SearchCatalogResponse, error)
 
 		SearchCrossSellProducts(

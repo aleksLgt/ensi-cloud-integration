@@ -6,35 +6,20 @@ import (
 	"fmt"
 	"net/http"
 
-	http2 "ensi-cloud-integration/internal/app/http"
-
 	"gopkg.in/validator.v2"
+
+	http2 "ensi-cloud-integration/internal/app/http"
+	"ensi-cloud-integration/internal/domain"
 )
 
 type (
 	indexCategoriesCommand interface {
-		IndexCategories(ctx context.Context, request *IndexCategoriesRequest) error
+		IndexCategories(ctx context.Context, request *domain.IndexCategoriesRequest) (*domain.IndexCategoriesResponse, error)
 	}
 
 	IndexCategoriesHandler struct {
 		name                   string
 		indexCategoriesCommand indexCategoriesCommand
-	}
-
-	body struct {
-		Name      string   `json:"name" validate:"nonzero,nonnil"`
-		URL       string   `json:"url,omitempty"`
-		ParentIds []string `json:"parent_ids,omitempty"`
-	}
-
-	action struct {
-		Action string `json:"action"` // TODO custom rule
-		Id     string `json:"id" validate:"nonzero,nonnil"`
-		Body   body   `json:"body" validate:"nonnil"`
-	}
-
-	IndexCategoriesRequest struct {
-		Actions []action `json:"actions" validate:"nonnil"`
 	}
 )
 
@@ -51,7 +36,7 @@ func (h *IndexCategoriesHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 	ctx := r.Context()
 
 	var (
-		request *IndexCategoriesRequest
+		request *domain.IndexCategoriesRequest
 		err     error
 	)
 
@@ -65,17 +50,28 @@ func (h *IndexCategoriesHandler) ServeHTTP(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = h.indexCategoriesCommand.IndexCategories(ctx, request)
+	response, err := h.indexCategoriesCommand.IndexCategories(ctx, request)
 	if err != nil {
 		http2.GetErrorResponse(w, h.name, err, http.StatusBadRequest)
 		return
 	}
 
-	http2.GetSuccessResponse(w)
+	buf, err := json.Marshal(&response)
+	if err != nil {
+		http2.GetErrorResponse(w, h.name, fmt.Errorf("failed to encode response %w", err), http.StatusInternalServerError)
+		return
+	}
+
+	if len(response.Errors) > 0 {
+		http2.GetResponseWithBody(w, buf, http.StatusBadRequest)
+		return
+	}
+
+	http2.GetResponseWithBody(w, buf, http.StatusOK)
 }
 
-func (_ *IndexCategoriesHandler) getRequestData(r *http.Request) (*IndexCategoriesRequest, error) {
-	request := &IndexCategoriesRequest{}
+func (_ *IndexCategoriesHandler) getRequestData(r *http.Request) (*domain.IndexCategoriesRequest, error) {
+	request := &domain.IndexCategoriesRequest{}
 	err := json.NewDecoder(r.Body).Decode(request)
 
 	if err != nil {
